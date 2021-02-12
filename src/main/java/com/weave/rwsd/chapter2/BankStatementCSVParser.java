@@ -8,11 +8,12 @@ import java.util.stream.Collectors;
 /**
  * 파싱 로직을 추출해 한 클래스로 만듦
  */
-public class BankStatementCSVParser {
+public class BankStatementCSVParser implements BankStatementParser {
 
     private static final DateTimeFormatter DATE_PATTERN = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-    private BankTransaction parseFromCSV(final String line) {
+    @Override
+    public BankTransaction parseFrom(String line) {
         final String[] columns = line.split(",");
         final LocalDate date = LocalDate.parse(columns[0], DATE_PATTERN);
         final double amount = Double.parseDouble(columns[1]);
@@ -21,8 +22,9 @@ public class BankStatementCSVParser {
         return new BankTransaction(date, amount, description);
     }
 
-    public List<BankTransaction> parseLinesFromCSV(final List<String> lines) {
-        return lines.stream().map(this::parseFromCSV).collect(Collectors.toList());
+    @Override
+    public List<BankTransaction> parseLinesFrom(List<String> lines) {
+        return lines.stream().map(this::parseFrom).collect(Collectors.toList());
     }
 
 }
